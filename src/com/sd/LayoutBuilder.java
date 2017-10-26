@@ -34,6 +34,11 @@ class LayoutBuilder extends JFrame {
         return label;
     }
 
+    public JScrollPane addScrollPane(JScrollPane pane) {
+        this.__frame.add(pane, BorderLayout.CENTER);
+        return pane;
+    }
+
     public void setPosition(int x, int y) {
         this.__frame.setLocation(x, y);
     }

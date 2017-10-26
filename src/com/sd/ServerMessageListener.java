@@ -41,7 +41,7 @@ public class ServerMessageListener extends Thread {
                 System.out.println(inputLine);
                 Calendar cal = Calendar.getInstance();
                 SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-                inputLine = this.client.getLocalSocketAddress() + " | " + sdf.format(cal.getTime()) + " " + inputLine;
+                inputLine = this.client.getInetAddress().getHostAddress() + ":" + this.client.getPort() + " | " + sdf.format(cal.getTime()) + " - " + inputLine;
                 this.messageHandler.sendMessage(inputLine);
             }
         } catch (IOException e) {

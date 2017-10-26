@@ -41,24 +41,18 @@ public class ChatClient extends Thread {
         //Buffer do teclado
         BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
         String userInput;
-        System.out.println("User Input:");
         // while para ler do teclado
         try {
+            System.out.println("User Input:");
             while ((userInput = stdIn.readLine()) != null) {
                 // envia para o servidor
                 out.println(userInput);
-                // escreve o que recebe recebe do servidor
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        out.close();
-        try {
+            System.out.println("OUT CLOSE");
+            out.close();
+            System.out.println("STDIN CLOSE");
             stdIn.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
+            System.out.println("chatSocket CLOSE");
             chatSocket.close();
         } catch (IOException e) {
             e.printStackTrace();

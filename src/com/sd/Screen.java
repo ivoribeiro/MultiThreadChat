@@ -1,6 +1,7 @@
 package com.sd;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.Semaphore;
@@ -10,6 +11,8 @@ class Screen extends Thread {
     private final Queue<String> __messageQueue;
     private final String DEFAULT;
     private final Semaphore __screenSemaphore;
+    private JList<String> __messageList;
+    private DefaultListModel<String> __listModel;
 
 
     /**
@@ -35,6 +38,13 @@ class Screen extends Thread {
      */
     public Screen(String defaultMessage) {
         this.__messageQueue = new LinkedBlockingQueue<String>();
+        this.__listModel = new DefaultListModel<String>();
+        this.__listModel.addElement("teste");
+        this.__listModel.addElement("teste");
+        this.__listModel.addElement("teste");
+        this.__listModel.addElement("teste");
+        this.__listModel.addElement("teste");
+        this.__messageList = new JList<String>(this.__listModel);
         this.DEFAULT = defaultMessage;
         this.__screenSemaphore = new Semaphore(1);
 
@@ -52,9 +62,8 @@ class Screen extends Thread {
     }
 
     /**
-     * @param screenLabel
      */
-    public void printMessages(JLabel screenLabel) {
+    public void printMessages() {
         try {
             this.__screenSemaphore.acquire(1);
         } catch (InterruptedException e) {
@@ -62,12 +71,13 @@ class Screen extends Thread {
         }
         while (!__messageQueue.isEmpty()) {
             String sm = this.__messageQueue.poll();
-            screenLabel.setText(sm);
+            this.__listModel.addElement(sm);
+            this.__messageList.setModel(this.__listModel);
         }
-        screenLabel.setText(this.DEFAULT);
+        //screenLabel.setText(this.DEFAULT);
         this.__screenSemaphore.release();
         this.sleep();
-        this.printMessages(screenLabel);
+        this.printMessages();
     }
 
     /**
@@ -75,15 +85,18 @@ class Screen extends Thread {
      *
      * @return
      */
-    private JLabel buildUI() {
+    private void buildUI() {
         String myname = Thread.currentThread().getName();
-        LayoutBuilder layoutBuilder = new LayoutBuilder(myname, 500, 75);
+        LayoutBuilder layoutBuilder = new LayoutBuilder(myname, 350, 700);
         layoutBuilder.setPosition(450, 150);
-        JLabel screenLabel = layoutBuilder.label(this.DEFAULT);
-        layoutBuilder.addLabel(screenLabel);
+        this.__messageList.setBackground(Color.lightGray);
+        this.__messageList.setFixedCellHeight(70);
+        this.__messageList.setFixedCellWidth(320);
+        JScrollPane pane = new JScrollPane(this.__messageList);
+        //pane.setLocation(10,10);
+        layoutBuilder.addScrollPane(pane);
         layoutBuilder.build();
         layoutBuilder.dispose();
-        return screenLabel;
     }
 
     /**
@@ -91,8 +104,8 @@ class Screen extends Thread {
      */
     public void run() {
         this.setName("Screen Thread");
-        JLabel screenLabel = this.buildUI();
+        this.buildUI();
         this.sleep();
-        this.printMessages(screenLabel);
+        this.printMessages();
     }
 }
