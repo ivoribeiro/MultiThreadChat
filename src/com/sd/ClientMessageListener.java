@@ -1,22 +1,30 @@
 package com.sd;
 
-import java.io.*;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.Socket;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
-public class MessageListner extends Thread {
+/**
+ * Client message listner, it handle the messages
+ * coming from socker input stream and send them
+ * to the screen
+ */
+public class ClientMessageListener extends Thread {
 
-    private MessageHandler messageHandler;
     private BufferedReader in;
+    private Screen messageHandler;
 
 
-    public MessageListner(MessageHandler messageHandler) {
+    public ClientMessageListener(Screen messageHandler) {
         this.messageHandler = messageHandler;
     }
 
     /**
-     * Add an input stream to message listner
+     * Add an input stream to message listener instance
      *
      * @param inputStream
      */
@@ -32,10 +40,12 @@ public class MessageListner extends Thread {
         String inputLine;
         try {
             while ((inputLine = this.in.readLine()) != null) {
-                System.out.println("Message Listner: Mensagem recebida");
+                System.out.println("Client message listner: Mensagem recebida");
                 System.out.println(inputLine);
-                this.messageHandler.sendMessage(inputLine);
+                this.messageHandler.processMessage(inputLine);
             }
+            //close the buffer reader
+            this.in.close();
         } catch (IOException e) {
             System.out.println("Error reading buffer");
             e.printStackTrace();

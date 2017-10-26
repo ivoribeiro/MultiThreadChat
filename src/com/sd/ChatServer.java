@@ -3,7 +3,6 @@ package com.sd;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 
 public class ChatServer extends Thread {
     private int port;
@@ -38,7 +37,7 @@ public class ChatServer extends Thread {
                     System.err.println("Could not get client output stream.");
                 }
                 try {
-                    MessageListner messageListner = new MessageListner(this.messageHandler);
+                    ServerMessageListener messageListner = new ServerMessageListener(this.messageHandler, clientSocket);
                     messageListner.addInputStream(clientSocket.getInputStream());
                     System.out.println("Input added to message listner");
                     messageListner.start();
