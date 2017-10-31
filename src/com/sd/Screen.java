@@ -39,11 +39,6 @@ class Screen extends Thread {
     public Screen(String defaultMessage) {
         this.__messageQueue = new LinkedBlockingQueue<String>();
         this.__listModel = new DefaultListModel<String>();
-        this.__listModel.addElement("teste");
-        this.__listModel.addElement("teste");
-        this.__listModel.addElement("teste");
-        this.__listModel.addElement("teste");
-        this.__listModel.addElement("teste");
         this.__messageList = new JList<String>(this.__listModel);
         this.DEFAULT = defaultMessage;
         this.__screenSemaphore = new Semaphore(1);

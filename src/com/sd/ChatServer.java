@@ -33,16 +33,12 @@ public class ChatServer extends Thread {
                     OutputStream out = clientSocket.getOutputStream();
                     messageHandler.addOutputStream(out);
                     System.out.println("Output added to message handler");
-                } catch (IOException e) {
-                    System.err.println("Could not get client output stream.");
-                }
-                try {
                     ServerMessageListener messageListner = new ServerMessageListener(this.messageHandler, clientSocket);
                     messageListner.addInputStream(clientSocket.getInputStream());
                     System.out.println("Input added to message listner");
                     messageListner.start();
                 } catch (IOException e) {
-                    System.err.println("Could not get client input stream.");
+                    System.err.println("Could not get client stream.");
                 }
             }
             //messageHandler.start();
