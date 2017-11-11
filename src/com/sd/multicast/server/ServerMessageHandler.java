@@ -1,5 +1,7 @@
 package com.sd.multicast.server;
 
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
 import java.io.*;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -21,8 +23,24 @@ public class ServerMessageHandler {
      * @param message
      */
     public void sendMessage(String message) throws IOException {
-        byte[] buf = new byte[256];
-        buf = message.getBytes();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(message);
+        byte[] buf = baos.toByteArray();
+        DatagramPacket packet = new DatagramPacket(buf, buf.length, group, 4446);
+        socket.send(packet);
+    }
+
+    /**
+     * Send frame to all the group
+     *
+     * @throws IOException
+     */
+    public void sendFrame(BufferedImage image) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(image);
+        byte[] buf = baos.toByteArray();
         DatagramPacket packet = new DatagramPacket(buf, buf.length, group, 4446);
         socket.send(packet);
     }

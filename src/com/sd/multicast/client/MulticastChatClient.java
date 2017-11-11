@@ -1,5 +1,7 @@
 package com.sd.multicast.client;
 
+import com.sd.camera.Camera;
+
 import java.io.*;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
@@ -56,8 +58,21 @@ class MulticastChatClientListner extends Thread {
             packet = new DatagramPacket(buf, buf.length);
             try {
                 this.multicastSocket.receive(packet);
+                //Deserialze object
+                ByteArrayInputStream bais = new ByteArrayInputStream(buf);
+                ObjectInputStream ois = new ObjectInputStream(bais);
+                try {
+                    Object readObject = ois.readObject();
+                    if (readObject instanceof String) {
+                        String message = (String) readObject;
+                        System.out.println("Message is: " + message);
+                    } else {
+                        System.out.println("The received object is not of type String!");
+                    }
+                } catch (Exception e) {
+                    System.out.println("No object could be read from the received UDP datagram.");
+                }
                 String received = new String(packet.getData(), 0, packet.getLength());
-                System.out.println(received);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -76,15 +91,15 @@ class MulticastChatClientWriter extends Thread {
     public void run() {
         BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
         String userInput;
-        try {
-            System.out.println("User Input:");
-            while ((userInput = stdIn.readLine()) != null) {
-                out.println(userInput);
-            }
-            System.out.println("OUT CLOSE");
-            out.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+        System.out.println("User Input:");
+        Camera camera = new Camera(out);
+        camera.start();
+        //while ((userInput = stdIn.readLine()) != null) {
+        //    out.println(userInput);
+        //}
+        System.out.println("OUT CLOSE");
+        out.close();
+
     }
 }
